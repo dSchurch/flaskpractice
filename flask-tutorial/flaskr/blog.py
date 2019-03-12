@@ -105,8 +105,16 @@ def delete(id):
 @login_required
 def users():
     db = get_db()
-    users_post = db.execute(
-        'SELECT COUNT(p.author_id) as num_post, user.username, user.id'
-        'FROM user JOIN post p on p.author_id = user.id GROUP BY p.author_id'
-    ).fetchall()
+    users_post = db.execute('SELECT user.username, COUNT(user.username) as num_post, user.id FROM user JOIN post p on p.author_id = user.id GROUP BY user.username').fetchall()
     return render_template('blog/users.html', users=users_post)
+
+@bp.route('/users/<int:user_id>', methods=("GET",))
+@login_required
+def users_posts(user_id):
+    db = get_db()
+    user = db.execute('SELECT username FROM user WHERE id = ?', (user_id,)).fetchone()
+    users_posts = db.execute('SELECT title, body, created FROM post WHERE author_id = ?', (user_id,)).fetchall()
+    print('-------------------------------------------------------------')
+    print(users_posts)
+    print('--------------------------------------------------------------')
+    return render_template('blog/user_profile.html', posts=users_posts, user=user[0])

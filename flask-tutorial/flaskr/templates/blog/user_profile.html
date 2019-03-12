@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}{{user}}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  {% for post in posts %}
+    <article class="post">
+      <header>
+        <div>
+          <h2>Post name:{{ post[0] }} Created Date: {{post[2]}}</h2>
+        </div>
+      </header>
+  {% endfor %}
+{% endblock %}
